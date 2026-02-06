@@ -1,0 +1,211 @@
+/* HomePage.css (Clean Professional) */
+
+.home-page {
+  background-color: white;
+}
+
+/* Hero Section - Clean Split/Overlay Style */
+.hero-clean {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 80px); /* Full viewport height minus header */
+  min-height: 500px; /* Minimum height for mobile/small screens */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-image-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Slight dim for text readability without heavy overlay */
+  filter: brightness(0.85);
+}
+
+.hero-text-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  max-width: 600px;
+  padding: 0 1rem;
+}
+
+.hero-headline {
+  font-family: "Inter", sans-serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.hero-subheadline {
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.btn-hero-primary {
+  display: inline-block;
+  background-color: white;
+  color: var(--text-main);
+  padding: 1rem 2.5rem;
+  font-weight: 600;
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  border: 1px solid white;
+}
+
+.btn-hero-primary:hover {
+  background-color: transparent;
+  color: white;
+}
+
+/* Featured Categories */
+.featured-clean {
+  padding: 5rem 1.5rem;
+}
+
+.section-header-clean {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+}
+
+.section-header-clean h2 {
+  font-family: "Inter", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.view-all-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-main);
+  font-weight: 500;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.view-all-link:hover {
+  border-bottom-color: var(--text-main);
+}
+
+/* Category Grid */
+.category-grid-clean {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.cat-card-clean {
+  display: block;
+  text-decoration: none;
+  text-decoration: none;
+}
+
+.cat-img-wrapper {
+  overflow: hidden;
+  margin-bottom: 1rem;
+  aspect-ratio: 0.8;
+  background-color: #f8fafc;
+}
+
+.cat-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cat-card-clean:hover .cat-img-wrapper img {
+  transform: scale(1.05);
+}
+
+.cat-info-clean h3 {
+  font-family: "Inter", sans-serif;
+  font-size: 1.25rem;
+  color: var(--text-main);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.shop-link {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Trust Section */
+.trust-section {
+  background-color: #f8fafc;
+  padding: 4rem 1.5rem;
+  margin-top: 4rem;
+}
+
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  text-align: center;
+}
+
+.trust-item h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.trust-item p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .hero-headline {
+    font-size: 2.5rem;
+  }
+
+  .category-grid-clean {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-clean {
+    height: 500px;
+  }
+
+  .category-grid-clean {
+    grid-template-columns: 1fr;
+  }
+
+  .trust-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
