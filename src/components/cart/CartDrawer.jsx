@@ -3,6 +3,7 @@ import { X, Trash, ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext"; // Adjusted path
 import Button from "../common/Button"; // Adjusted path
+import { getSecureImageUrl } from "../../utils/imageUtils";
 import "./CartDrawer.css";
 
 const CartDrawer = () => {
@@ -48,8 +49,7 @@ const CartDrawer = () => {
                 <div className="item-img-wrapper">
                   <img
                     src={
-                      item.photos?.[0] ||
-                      item.photo ||
+                      getSecureImageUrl(item.photos?.[0] || item.photo) ||
                       "https://via.placeholder.com/80"
                     }
                     alt={item.name}

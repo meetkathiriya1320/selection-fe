@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
+import { getSecureImageUrl } from "../utils/imageUtils";
 import { ArrowRight } from "lucide-react";
 import "./HomePage.css";
 
@@ -32,7 +33,7 @@ const HomePage = () => {
 
   const heroImage =
     banners.length > 0
-      ? banners[0].image
+      ? getSecureImageUrl(banners[0].image)
       : "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop";
   const heroTitle = banners.length > 0 ? banners[0].title : "New Collection";
 
@@ -75,7 +76,7 @@ const HomePage = () => {
                 <div className="cat-img-wrapper">
                   <img
                     src={
-                      category.image ||
+                      getSecureImageUrl(category.image) ||
                       `https://source.unsplash.com/random/800x1000?fashion,${category.name}`
                     }
                     alt={category.name}

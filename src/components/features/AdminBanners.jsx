@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axios";
+import { getSecureImageUrl } from "../../utils/imageUtils";
 import Button from "../common/Button";
 import Input from "../common/Input";
 import { Loader2, Trash } from "lucide-react";
@@ -127,7 +128,7 @@ const AdminBanners = () => {
                 }}
               >
                 <img
-                  src={newBanner.image}
+                  src={getSecureImageUrl(newBanner.image)}
                   alt="Preview"
                   style={{
                     width: "40px",
@@ -202,7 +203,11 @@ const AdminBanners = () => {
       <div className="items-grid">
         {banners.map((banner) => (
           <div key={banner._id} className="item-row">
-            <img src={banner.image} alt={banner.title} className="item-image" />
+            <img
+              src={getSecureImageUrl(banner.image)}
+              alt={banner.title}
+              className="item-image"
+            />
             <div className="item-info">
               <h4 className="item-title">{banner.title}</h4>
               <p className="item-meta">

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axios";
+import { getSecureImageUrl } from "../../utils/imageUtils";
 import Button from "../common/Button";
 import { Loader2, Plus, Trash, Edit } from "lucide-react";
 
@@ -79,8 +80,7 @@ const AdminSelections = () => {
             <div className="flex" style={{ gap: "0.25rem" }}>
               <img
                 src={
-                  item.photos?.[0] ||
-                  item.photo ||
+                  getSecureImageUrl(item.photos?.[0] || item.photo) ||
                   "https://via.placeholder.com/100"
                 }
                 alt=""

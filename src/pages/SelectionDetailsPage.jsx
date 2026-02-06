@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import { getSecureImageUrl } from "../utils/imageUtils";
 import Button from "../components/common/Button";
 import Input from "../components/common/Input";
 import { useAuth } from "../context/AuthContext";
@@ -36,8 +37,7 @@ const SelectionDetailsPage = () => {
         setSelection(data);
         // Set initial image
         setSelectedImage(
-          data.photos?.[0] ||
-            data.photo ||
+          getSecureImageUrl(data.photos?.[0] || data.photo) ||
             "https://via.placeholder.com/600x800",
         );
       } catch (err) {
@@ -153,8 +153,11 @@ const SelectionDetailsPage = () => {
 
   const photos =
     selection.photos && selection.photos.length > 0
-      ? selection.photos
-      : [selection.photo || "https://via.placeholder.com/600x800"];
+      ? selection.photos.map((p) => getSecureImageUrl(p))
+      : [
+          getSecureImageUrl(selection.photo) ||
+            "https://via.placeholder.com/600x800",
+        ];
 
   return (
     <div className="details-page">

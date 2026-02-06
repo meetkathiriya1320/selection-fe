@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axios";
+import { getSecureImageUrl } from "../../utils/imageUtils";
 import Button from "../common/Button";
 import Input from "../common/Input";
 import { Loader2, Plus, Trash, X, Star, Edit } from "lucide-react";
@@ -172,7 +173,7 @@ const AdminCategories = () => {
                 }}
               >
                 <img
-                  src={formData.image}
+                  src={getSecureImageUrl(formData.image)}
                   alt="Preview"
                   style={{
                     width: "40px",
@@ -280,7 +281,7 @@ const AdminCategories = () => {
                 <td>
                   {cat.image ? (
                     <img
-                      src={cat.image}
+                      src={getSecureImageUrl(cat.image)}
                       alt=""
                       style={{
                         width: "50px",

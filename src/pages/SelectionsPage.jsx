@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import api from "../api/axios";
+import { getSecureImageUrl } from "../utils/imageUtils";
 import { Search, ChevronRight, ChevronDown } from "lucide-react";
 import "./SelectionsPage.css";
 
@@ -138,8 +139,7 @@ const SelectionsPage = () => {
                   <div className="img-wrapper">
                     <img
                       src={
-                        item.photos?.[0] ||
-                        item.photo ||
+                        getSecureImageUrl(item.photos?.[0] || item.photo) ||
                         "https://via.placeholder.com/400x500"
                       }
                       alt={item.name}
