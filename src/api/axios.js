@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const api = axios.create({
-    baseURL: 'http://localhost:5000/api', // TODO: Move to env var
+const api = axios.creat5000e({
+    baseURL: 'https://selection-be-1.onrender.com/api', // TODO: Move to env var
     headers: {
         'Content-Type': 'application/json',
     },
