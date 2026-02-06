@@ -14,23 +14,35 @@ const RegisterPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [step, setStep] = useState("register"); // 'register' | 'otp'
   const [isLoading, setIsLoading] = useState(false);
 
-  const { register } = useAuth();
+  const { register, verifyOtp } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const result = await register(name, email, password);
-
-    if (result.success) {
-      toast.success("Account created! Please login.");
-      navigate("/");
+    if (step === "register") {
+      const result = await register(name, email, password);
+      if (result.success) {
+        toast.success("OTP sent to your email!");
+        setStep("otp");
+      } else {
+        toast.error(result.message);
+      }
     } else {
-      toast.error(result.message);
+      const result = await verifyOtp(email, otp);
+      if (result.success) {
+        toast.success("Account verified! Welcome!");
+        navigate("/");
+      } else {
+        toast.error(result.message);
+      }
     }
+
     setIsLoading(false);
   };
 
@@ -53,30 +65,43 @@ const RegisterPage = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="auth-form">
-            <Input
-              label="Full Name"
-              type="text"
-              placeholder="John Doe"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-            <Input
-              label="Email Address"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <Input
-              label="Password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            {step === "register" ? (
+              <>
+                <Input
+                  label="Full Name"
+                  type="text"
+                  placeholder="John Doe"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+                <Input
+                  label="Email Address"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <Input
+                  label="Password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </>
+            ) : (
+              <Input
+                label="Enter OTP"
+                type="text"
+                placeholder="123456"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                required
+              />
+            )}
 
             <Button
               type="submit"
@@ -84,7 +109,7 @@ const RegisterPage = () => {
               style={{ width: "100%", marginTop: "0.5rem" }}
               isLoading={isLoading}
             >
-              Sign Up
+              {step === "register" ? "Sign Up" : "Verify & Login"}
             </Button>
           </form>
 

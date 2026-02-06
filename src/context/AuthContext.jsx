@@ -45,18 +45,30 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
       });
-      const { token, user } = response.data.data;
 
-      // Auto login after register
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      setUser(user);
-
-      return { success: true };
+      return { success: true, data: response.data.data };
     } catch (error) {
       return {
         success: false,
         message: error.response?.data?.message || "Registration failed",
+      };
+    }
+  };
+
+  const verifyOtp = async (email, otp) => {
+    try {
+      const response = await api.post("/auth/verify-otp", { email, otp });
+      const { token, user } = response.data.data;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
+
+      return { success: true, user };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "Verification failed",
       };
     }
   };
@@ -73,6 +85,7 @@ export const AuthProvider = ({ children }) => {
         user,
         login,
         register,
+        verifyOtp,
         logout,
         loading,
         isAuthenticated: !!user,
