@@ -115,7 +115,11 @@ const DashboardPage = () => {
                       <div className="detail-item">
                         <span className="label">Total Amount</span>
                         <span className="value highlight">
-                          ₹{order.total_amount?.toLocaleString()}
+                          ₹
+                          {(order.total_deposit
+                            ? order.total_amount + order.total_deposit
+                            : order.total_amount * 1.5
+                          ).toLocaleString()}
                         </span>
                       </div>
                     </div>

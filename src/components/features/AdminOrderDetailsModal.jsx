@@ -92,9 +92,29 @@ const AdminOrderDetailsModal = ({
                   </div>
                 )}
                 <div className="summary-card">
+                  <div className="summary-label">Subtotal</div>
+                  <div className="summary-value">
+                    ₹{data.order.total_amount.toLocaleString()}
+                  </div>
+                </div>
+                <div className="summary-card">
+                  <div className="summary-label">Deposit (50%)</div>
+                  <div className="summary-value">
+                    ₹
+                    {(data.order.total_deposit
+                      ? data.order.total_deposit
+                      : data.order.total_amount * 0.5
+                    ).toLocaleString()}
+                  </div>
+                </div>
+                <div className="summary-card">
                   <div className="summary-label">Total Amount</div>
                   <div className="summary-value highlight">
-                    ₹{data.order.total_amount?.toLocaleString()}
+                    ₹
+                    {(data.order.total_deposit
+                      ? data.order.total_amount + data.order.total_deposit
+                      : data.order.total_amount * 1.5
+                    ).toLocaleString()}
                   </div>
                 </div>
                 <div className="summary-card">

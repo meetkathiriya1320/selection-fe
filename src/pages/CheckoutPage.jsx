@@ -229,7 +229,7 @@ const CheckoutPage = () => {
                 </div>
                 <div className="total-row final-total">
                   <span>Total</span>
-                  <span>₹{cartTotal.toLocaleString()}</span>
+                  <span>₹{(cartTotal * 1.5).toLocaleString()}</span>
                 </div>
               </div>
 

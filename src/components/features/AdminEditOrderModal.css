@@ -1,0 +1,87 @@
+/* AdminEditOrderModal.css */
+/* Inherits base modal styles from AdminOrderDetailsModal (if available globally) or needs its own base styles */
+
+/* Layout */
+.edit-grid {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* Edit Inputs */
+.edit-input {
+  width: 100%;
+  max-width: 140px; /* Limit width */
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #334155;
+  background-color: #fff;
+  transition: all 0.2s ease;
+}
+
+.edit-input:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.edit-input[type="date"] {
+  font-family: inherit;
+  color: #475569;
+}
+
+/* Action Buttons */
+.action-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Table Enhancements */
+.admin-table th.editable-header {
+  background-color: #eff6ff;
+  color: #1e40af;
+  border-bottom-color: #dbeafe;
+}
+
+.icon-btn {
+  border: none;
+  background: transparent;
+  padding: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.icon-btn.edit:hover {
+  color: #2563eb;
+  background-color: #eff6ff;
+}
+
+.icon-btn.delete:hover {
+  color: #dc2626;
+  background-color: #fef2f2;
+}
+
+/* Responsive adjustment */
+@media (max-width: 768px) {
+  .edit-grid {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .edit-input {
+    max-width: 100%;
+  }
+}

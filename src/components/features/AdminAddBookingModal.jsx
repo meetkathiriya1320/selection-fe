@@ -361,12 +361,36 @@ const AdminAddBookingModal = ({ isOpen, onClose, onBookingAdded }) => {
 
                 <div className="cart-footer">
                   <div className="total-row">
-                    <span>Total Deposit</span>
+                    <span>Subtotal</span>
                     <span>
                       ₹
                       {cart
                         .reduce((sum, item) => sum + item.selection.price, 0)
                         .toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="total-row">
+                    <span>Deposit (50%)</span>
+                    <span>
+                      ₹
+                      {(
+                        cart.reduce(
+                          (sum, item) => sum + item.selection.price,
+                          0,
+                        ) * 0.5
+                      ).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="total-row highlight">
+                    <span>Total Amount</span>
+                    <span>
+                      ₹
+                      {(
+                        cart.reduce(
+                          (sum, item) => sum + item.selection.price,
+                          0,
+                        ) * 1.5
+                      ).toLocaleString()}
                     </span>
                   </div>
                   <Button
