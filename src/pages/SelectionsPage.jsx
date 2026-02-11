@@ -27,14 +27,60 @@ const SelectionsPage = () => {
     getCategories();
   }, []);
 
+  /* Restored: Search State */
+  const [searchTerm, setSearchTerm] = useState(
+    searchParams.get("search") || "",
+  );
+  const [debouncedSearch, setDebouncedSearch] = useState(
+    searchParams.get("search") || "",
+  );
+
+  // Update searchTerm if URL changes externally
+  useEffect(() => {
+    const searchFromUrl = searchParams.get("search") || "";
+    if (searchFromUrl !== searchTerm) {
+      setSearchTerm(searchFromUrl);
+    }
+  }, [searchParams]);
+
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Update URL when debounced search changes
+  useEffect(() => {
+    const currentSearchInUrl = searchParams.get("search") || "";
+    if (debouncedSearch !== currentSearchInUrl) {
+      if (debouncedSearch) {
+        searchParams.set("search", debouncedSearch);
+      } else {
+        searchParams.delete("search");
+      }
+      setSearchParams(searchParams);
+    }
+  }, [debouncedSearch, setSearchParams, searchParams]);
+
   // Fetch Selections
   useEffect(() => {
     const fetchSelections = async () => {
       setLoading(true);
       try {
-        const query =
-          currentCategory === "All" ? "" : `?category=${currentCategory}`;
-        const response = await api.get(`/selection${query}`);
+        const category = searchParams.get("category");
+        const search = searchParams.get("search");
+
+        let queryParams = new URLSearchParams();
+        if (category && category !== "All")
+          queryParams.append("category", category);
+        if (search) queryParams.append("search", search);
+
+        const queryString = queryParams.toString()
+          ? `?${queryParams.toString()}`
+          : "";
+        const response = await api.get(`/selection${queryString}`);
         setSelections(response.data.data);
       } catch (error) {
         console.error("Failed to fetch selections", error);
@@ -44,7 +90,7 @@ const SelectionsPage = () => {
     };
 
     fetchSelections();
-  }, [currentCategory]);
+  }, [searchParams]);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -82,8 +128,18 @@ const SelectionsPage = () => {
               ethnic wear.
             </p>
 
-            {/* Custom Hero Filter Dropdown */}
+            {/* Custom Hero Filter Dropdown & Search */}
             <div className="hero-filter-container">
+              <div className="hero-search-wrapper">
+                <Search className="search-icon" size={18} />
+                <input
+                  type="text"
+                  placeholder="Search selections..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="hero-search-input"
+                />
+              </div>
               <div className="hero-select-wrapper">
                 <button
                   className={`hero-custom-trigger ${isDropdownOpen ? "open" : ""}`}

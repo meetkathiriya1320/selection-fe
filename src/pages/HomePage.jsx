@@ -7,9 +7,9 @@ import "./HomePage.css";
 
 const HomePage = () => {
   const [banners, setBanners] = useState([]);
-  const [featuredCategories, setFeaturedCategories] = useState([]);
 
   useEffect(() => {
+    // ... (fetch logic remains same)
     const fetchData = async () => {
       try {
         const [bannerRes, catRes] = await Promise.all([
@@ -35,6 +35,8 @@ const HomePage = () => {
     banners.length > 0
       ? getSecureImageUrl(banners[0].image)
       : "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop";
+
+  // Use translated title if it matches default, otherwise use banner title (dynamic content usually not translated this way but for static default it works)
   const heroTitle = banners.length > 0 ? banners[0].title : "New Collection";
 
   return (

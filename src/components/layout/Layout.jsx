@@ -2,7 +2,6 @@ import React from "react";
 import Navbar from "./Navbar";
 import { Outlet } from "react-router-dom";
 import CartDrawer from "../cart/CartDrawer";
-
 const Layout = () => {
   return (
     <div
@@ -22,7 +21,9 @@ const Layout = () => {
         }}
       >
         <div className="container">
-          <p style={{ opacity: 0.7 }}>© 2024 Selection. All rights reserved.</p>
+          <p style={{ opacity: 0.7 }}>
+            &copy; 2024 Selection. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>

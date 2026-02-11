@@ -31,9 +31,6 @@ const CheckoutPage = () => {
       // Pre-fill dates from first item if available
       const firstItem = cartItems[0];
       if (firstItem.deliverDate && firstItem.returnDate) {
-        // fix: receiveDate vs returnDate mismatch in variable naming?
-        // In SelectionDetails it is 'receiveDate' or 'endDate'
-        // In cartItem it is: deliverDate, receiveDate (from my previous edit)
         setDates({
           deliveryDate: firstItem.deliverDate,
           returnDate: firstItem.receiveDate,
@@ -50,14 +47,14 @@ const CheckoutPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) {
-      toast.error("Please login to complete your booking");
+      toast.error("Please login to continue");
       navigate("/login", { state: { from: "/checkout" } });
       return;
     }
 
     // Validate Dates
     if (new Date(dates.deliveryDate) >= new Date(dates.returnDate)) {
-      toast.error("Return date must be after delivery date");
+      toast.error("Delivery date must be before return date");
       return;
     }
 
@@ -65,12 +62,12 @@ const CheckoutPage = () => {
     try {
       // Map cart items to API payload structure
       const itemsPayload = cartItems.map((item) => {
-        // Use item-specific dates if available (from SelectionDetails), else fallback to global checkoug dates
+        // Use item-specific dates if available, else fallback to global checkout dates
         const finalDeliverDate = item.deliverDate || dates.deliveryDate;
         const finalReceiveDate = item.receiveDate || dates.returnDate;
 
         if (!finalDeliverDate || !finalReceiveDate) {
-          throw new Error(`Please select dates for item: ${item.name}`);
+          throw new Error(`Please select dates for ${item.name}`);
         }
 
         return {
@@ -82,20 +79,17 @@ const CheckoutPage = () => {
           selectedColor: item.selectedColor,
           deliver_date: finalDeliverDate,
           receive_date: finalReceiveDate,
-          // Notes could be added if backend supports it per item or globally
         };
       });
 
-      await api.post("/order", { items: itemsPayload, notes }); // Assuming backend might accept global notes?
+      await api.post("/order", { items: itemsPayload, notes });
 
       setSuccess(true);
       clearCart();
       toast.success("Order placed successfully!");
     } catch (error) {
       console.error(error);
-      toast.error(
-        error.response?.data?.message || "Booking failed. Please try again.",
-      );
+      toast.error(error.response?.data?.message || "Failed to place order");
     } finally {
       setLoading(false);
     }
@@ -108,7 +102,7 @@ const CheckoutPage = () => {
           <CheckCircle size={64} className="text-success" />
           <h1>Booking Confirmed!</h1>
           <p>
-            Thank you for choosing Selection. We will review your request
+            Your order has been placed successfully. We will contact you
             shortly.
           </p>
           <div className="success-actions">
@@ -116,7 +110,7 @@ const CheckoutPage = () => {
               <Button variant="primary">View My Orders</Button>
             </Link>
             <Link to="/">
-              <Button variant="outline">Back Home</Button>
+              <Button variant="outline">Back to Home</Button>
             </Link>
           </div>
         </div>
@@ -138,7 +132,7 @@ const CheckoutPage = () => {
             <div className="form-card">
               <h3>Event Details</h3>
               <p className="form-desc">
-                Please specify when you need the items.
+                Please provide dates and any special requests for your booking.
               </p>
 
               <form onSubmit={handleSubmit} id="checkout-form">
@@ -164,11 +158,11 @@ const CheckoutPage = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>Additional Notes (Optional)</label>
+                  <label>Additional Notes</label>
                   <textarea
                     className="form-textarea"
                     rows="4"
-                    placeholder="Any special requests?"
+                    placeholder="Any special requests or instructions..."
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                   />
@@ -178,7 +172,7 @@ const CheckoutPage = () => {
 
             {!user && (
               <div className="login-alert">
-                <p>You must be logged in to place an order.</p>
+                <p>Please login to place your order</p>
                 <Link to="/login" state={{ from: "/checkout" }}>
                   <Button variant="outline" size="sm">
                     Login Now
@@ -224,11 +218,11 @@ const CheckoutPage = () => {
                   <span>₹{cartTotal.toLocaleString()}</span>
                 </div>
                 <div className="total-row deposit-row">
-                  <span>Deposit Required (50%)</span>
+                  <span>Security Deposit (50%)</span>
                   <span>₹{(cartTotal * 0.5).toLocaleString()}</span>
                 </div>
                 <div className="total-row final-total">
-                  <span>Total</span>
+                  <span>Total Payable</span>
                   <span>₹{(cartTotal * 1.5).toLocaleString()}</span>
                 </div>
               </div>
@@ -244,7 +238,7 @@ const CheckoutPage = () => {
                 {loading ? "Processing..." : "Confirm Booking"}
               </Button>
               <p className="secure-note">
-                Secure booking. You won't be charged yet.
+                Secure Booking. No payment required now.
               </p>
             </div>
           </div>

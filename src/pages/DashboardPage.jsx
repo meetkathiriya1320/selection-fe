@@ -2,19 +2,10 @@ import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import Button from "../components/common/Button";
-import AdminOrderDetailsModal from "../components/features/AdminOrderDetailsModal"; // Reuse for now
-import {
-  Loader2,
-  Calendar,
-  Package,
-  Clock,
-  ChevronRight,
-  History,
-  Eye,
-} from "lucide-react";
+import AdminOrderDetailsModal from "../components/features/AdminOrderDetailsModal";
+import { Loader2, Package, ChevronRight } from "lucide-react";
 import "./Dashboard.css";
 import { Link } from "react-router-dom";
-import toast from "react-hot-toast";
 
 const DashboardPage = () => {
   const { user } = useAuth();
@@ -36,11 +27,9 @@ const DashboardPage = () => {
     fetchOrders();
   }, []);
 
-  const statusLabels = {
-    pending: "Pending",
-    confirmed: "Confirmed",
-    cancelled: "Cancelled",
-    completed: "Completed",
+  const getStatusLabel = (status) => {
+    // Basic capitalization for status label
+    return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
   return (
@@ -49,7 +38,7 @@ const DashboardPage = () => {
         <div className="container">
           <h1 className="dashboard-title">My Account</h1>
           <p className="dashboard-subtitle">
-            Welcome, {user?.name}. Manage your curated selections and orders.
+            Manage your orders and account details, {user?.name || "User"}
           </p>
         </div>
       </div>
@@ -59,7 +48,7 @@ const DashboardPage = () => {
           <div className="section-heading-row">
             <h2 className="section-title">Order History</h2>
             <Link to="/selections" className="browse-link">
-              Browse New Selections <ChevronRight size={16} />
+              Browse Selections <ChevronRight size={16} />
             </Link>
           </div>
 
@@ -72,11 +61,8 @@ const DashboardPage = () => {
               <div className="empty-icon-wrapper">
                 <Package size={32} />
               </div>
-              <h3>No orders placed yet</h3>
-              <p>
-                Your collection awaits. Start your journey with our exclusive
-                pieces.
-              </p>
+              <h3>No orders yet</h3>
+              <p>Your wardrobe collection awaits.</p>
               <Link to="/selections">
                 <Button size="lg" className="explore-btn">
                   View Collection
@@ -87,7 +73,9 @@ const DashboardPage = () => {
             <div className="bookings-list">
               {orders.map((order) => (
                 <div key={order._id} className="booking-card">
-                  <div className="booking-status-strip accent-${order.status}"></div>
+                  <div
+                    className={`booking-status-strip accent-${order.status}`}
+                  ></div>
                   <div className="booking-info">
                     <div className="booking-main-header">
                       <h3 className="booking-item-name">
@@ -95,7 +83,7 @@ const DashboardPage = () => {
                         {order.items_count !== 1 ? "s" : ""}
                       </h3>
                       <span className={`booking-status status-${order.status}`}>
-                        {statusLabels[order.status] || order.status}
+                        {getStatusLabel(order.status)}
                       </span>
                     </div>
 

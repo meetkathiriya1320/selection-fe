@@ -10,6 +10,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const { user, logout } = useAuth();
   const { toggleCart, cartItems } = useCart();
+  /* Language Switcher Removed */
   const location = useLocation();
 
   useEffect(() => {
@@ -51,6 +52,7 @@ const Navbar = () => {
         </div>
 
         <div className="nav-actions">
+          {/* Language Switcher Removed */}
           {/* Cart Button */}
           <button
             className="cart-toggle-btn"
