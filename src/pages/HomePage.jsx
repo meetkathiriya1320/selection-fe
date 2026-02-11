@@ -7,6 +7,7 @@ import "./HomePage.css";
 
 const HomePage = () => {
   const [banners, setBanners] = useState([]);
+  const [featuredCategories, setFeaturedCategories] = useState([]);
 
   useEffect(() => {
     // ... (fetch logic remains same)
