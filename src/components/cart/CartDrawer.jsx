@@ -78,6 +78,7 @@ const CartDrawer = () => {
                   onClick={() => removeFromCart(item.uniqueId)} // Use uniqueId here
                   className="remove-btn"
                   title="Remove"
+                  style={{ position: "absolute", top: "0", right: "0" }}
                 >
                   <Trash size={18} />
                 </button>
