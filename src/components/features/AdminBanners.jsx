@@ -91,107 +91,173 @@ const AdminBanners = () => {
 
       {/* Add New Form */}
       <form onSubmit={handleAdd} className="admin-form">
-        <div className="form-group-row" style={{ alignItems: "flex-start" }}>
-          <Input
-            label="Banner Title"
-            value={newBanner.title}
-            onChange={(e) =>
-              setNewBanner({ ...newBanner, title: e.target.value })
-            }
-            required
-            style={{ flexGrow: 1 }}
-          />
+        <div
+          className="form-group-row"
+          style={{ flexDirection: "column", gap: "1.5rem" }}
+        >
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "1.5rem",
+              width: "100%",
+            }}
+          >
+            <Input
+              label="Banner Title"
+              value={newBanner.title}
+              onChange={(e) =>
+                setNewBanner({ ...newBanner, title: e.target.value })
+              }
+              required
+              style={{ marginBottom: 0 }}
+            />
 
-          <div style={{ flexGrow: 1 }}>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                fontWeight: 500,
-                fontSize: "0.9rem",
-              }}
-            >
-              Banner Image
-            </label>
-
-            {newBanner.image ? (
-              <div
+            <div>
+              <label
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  padding: "0.5rem",
-                  border: "1px solid var(--border)",
-                  borderRadius: "var(--radius-md)",
-                  height: "42px",
-                  background: "white",
+                  display: "block",
+                  marginBottom: "0.5rem",
+                  fontWeight: 500,
+                  fontSize: "0.9rem",
                 }}
               >
-                <img
-                  src={getSecureImageUrl(newBanner.image)}
-                  alt="Preview"
+                Banner Image
+              </label>
+
+              {newBanner.image ? (
+                <div
                   style={{
-                    width: "40px",
-                    height: "100%",
-                    objectFit: "cover",
-                    borderRadius: "4px",
-                  }}
-                />
-                <span
-                  style={{
-                    fontSize: "0.8rem",
-                    color: "var(--text-muted)",
-                    flexGrow: 1,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {newBanner.image.split("/").pop()}
-                </span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setNewBanner({ ...newBanner, image: "" })}
-                  style={{
-                    padding: "0.25rem",
-                    height: "auto",
-                    minWidth: "auto",
-                  }}
-                >
-                  <Trash size={14} color="var(--error)" />
-                </Button>
-              </div>
-            ) : (
-              <div style={{ position: "relative" }}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileUpload(e.target.files[0])}
-                  style={{
-                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
                     padding: "0.5rem",
                     border: "1px solid var(--border)",
                     borderRadius: "var(--radius-md)",
+                    height: "42px",
                     background: "white",
                   }}
-                  disabled={uploading}
-                />
-                {uploading && (
-                  <Loader2
-                    className="animate-spin"
-                    size={16}
-                    style={{ position: "absolute", right: "10px", top: "12px" }}
+                >
+                  <img
+                    src={getSecureImageUrl(newBanner.image)}
+                    alt="Preview"
+                    style={{
+                      width: "40px",
+                      height: "100%",
+                      objectFit: "cover",
+                      borderRadius: "4px",
+                    }}
                   />
-                )}
-              </div>
-            )}
+                  <span
+                    style={{
+                      fontSize: "0.8rem",
+                      color: "var(--text-muted)",
+                      flexGrow: 1,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {newBanner.image.split("/").pop()}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setNewBanner({ ...newBanner, image: "" })}
+                    style={{
+                      padding: "0.25rem",
+                      height: "auto",
+                      minWidth: "auto",
+                    }}
+                  >
+                    <Trash size={14} color="var(--error)" />
+                  </Button>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.5rem",
+                  }}
+                >
+                  <div style={{ position: "relative" }}>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileUpload(e.target.files[0])}
+                      style={{
+                        width: "100%",
+                        padding: "0.5rem",
+                        border: "1px solid var(--border)",
+                        borderRadius: "var(--radius-md)",
+                        background: "white",
+                        fontSize: "0.9rem",
+                      }}
+                      disabled={uploading}
+                    />
+                    {uploading && (
+                      <Loader2
+                        className="animate-spin"
+                        size={16}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "12px",
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: "1px",
+                        background: "var(--border)",
+                        flex: 1,
+                      }}
+                    ></div>
+                    <span
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "var(--text-muted)",
+                        fontWeight: 500,
+                      }}
+                    >
+                      OR
+                    </span>
+                    <div
+                      style={{
+                        height: "1px",
+                        background: "var(--border)",
+                        flex: 1,
+                      }}
+                    ></div>
+                  </div>
+
+                  <Input
+                    placeholder="Paste Image URL..."
+                    value={newBanner.image}
+                    onChange={(e) =>
+                      setNewBanner({ ...newBanner, image: e.target.value })
+                    }
+                    style={{ marginBottom: 0 }}
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           <Button
             type="submit"
-            style={{ marginTop: "1.7rem" }}
+            style={{ alignSelf: "flex-end" }}
             disabled={uploading}
           >
             {uploading ? "Uploading..." : "Add Banner"}

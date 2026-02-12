@@ -129,26 +129,45 @@ const AdminCategories = () => {
       <form onSubmit={handleSubmit} className="admin-form">
         <div
           style={{
-            display: "flex",
+            display: "grid",
+            gridTemplateColumns: "1fr 1.5fr auto auto",
             gap: "1rem",
-            alignItems: "flex-start",
-            flexWrap: "wrap",
+            alignItems: "start",
           }}
         >
-          <div style={{ flex: 1, minWidth: "200px" }}>
-            <Input
-              label={isEditing ? "Edit Name" : "New Category Name"}
+          {/* Name Input */}
+          <div style={{ paddingTop: "1px" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                fontWeight: 500,
+                fontSize: "0.9rem",
+              }}
+            >
+              {isEditing ? "Edit Name" : "Category Name"}
+            </label>
+            <input
+              type="text"
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
               required
               placeholder="e.g. Wedding"
-              style={{ marginBottom: 0 }}
+              style={{
+                width: "100%",
+                padding: "0.6rem 0.75rem",
+                borderRadius: "6px",
+                border: "1px solid var(--border)",
+                fontSize: "0.95rem",
+                height: "42px", // Fixed height for alignment
+              }}
             />
           </div>
 
-          <div style={{ flex: 1, minWidth: "200px" }}>
+          {/* Image Input */}
+          <div>
             <label
               style={{
                 display: "block",
@@ -198,37 +217,92 @@ const AdminCategories = () => {
                 </Button>
               </div>
             ) : (
-              <div style={{ position: "relative" }}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileUpload(e.target.files[0])}
-                  style={{
-                    width: "100%",
-                    padding: "0.5rem",
-                    border: "1px solid var(--border)",
-                    borderRadius: "var(--radius-md)",
-                    background: "white",
-                  }}
-                  disabled={uploading}
-                />
-                {uploading && (
-                  <Loader2
-                    className="animate-spin"
-                    size={16}
-                    style={{ position: "absolute", right: "10px", top: "12px" }}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                }}
+              >
+                <div style={{ position: "relative" }}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileUpload(e.target.files[0])}
+                    style={{
+                      width: "100%",
+                      padding: "0.5rem",
+                      border: "1px solid var(--border)",
+                      borderRadius: "var(--radius-md)",
+                      background: "white",
+                      fontSize: "0.9rem",
+                    }}
+                    disabled={uploading}
                   />
-                )}
+                  {uploading && (
+                    <Loader2
+                      className="animate-spin"
+                      size={16}
+                      style={{
+                        position: "absolute",
+                        right: "10px",
+                        top: "12px",
+                      }}
+                    />
+                  )}
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                  }}
+                >
+                  <div
+                    style={{
+                      height: "1px",
+                      background: "var(--border)",
+                      flex: 1,
+                    }}
+                  ></div>
+                  <span
+                    style={{
+                      fontSize: "0.75rem",
+                      color: "var(--text-muted)",
+                      fontWeight: 500,
+                    }}
+                  >
+                    OR
+                  </span>
+                  <div
+                    style={{
+                      height: "1px",
+                      background: "var(--border)",
+                      flex: 1,
+                    }}
+                  ></div>
+                </div>
+
+                <Input
+                  placeholder="Paste Image URL..."
+                  value={formData.image}
+                  onChange={(e) =>
+                    setFormData({ ...formData, image: e.target.value })
+                  }
+                  style={{ marginBottom: 0 }}
+                />
               </div>
             )}
           </div>
 
+          {/* Featured Checkbox */}
           <div
             style={{
+              height: "42px",
+              marginTop: "1.8rem", // Align with input field visually
               display: "flex",
               alignItems: "center",
-              height: "42px",
-              marginTop: "1.7rem",
             }}
           >
             <label
@@ -238,6 +312,7 @@ const AdminCategories = () => {
                 cursor: "pointer",
                 gap: "0.5rem",
                 userSelect: "none",
+                whiteSpace: "nowrap",
               }}
             >
               <input
@@ -246,20 +321,27 @@ const AdminCategories = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, isFeatured: e.target.checked })
                 }
-                style={{ width: "18px", height: "18px" }}
+                style={{
+                  width: "18px",
+                  height: "18px",
+                  accentColor: "var(--primary)",
+                }}
               />
-              <span style={{ fontWeight: 500 }}>Featured on Home?</span>
+              <span style={{ fontWeight: 500, fontSize: "0.95rem" }}>
+                Featured?
+              </span>
             </label>
           </div>
 
-          <div style={{ marginTop: "1.7rem", display: "flex", gap: "0.5rem" }}>
+          {/* Action Buttons */}
+          <div style={{ marginTop: "1.8rem", display: "flex", gap: "0.5rem" }}>
             {isEditing && (
               <Button type="button" variant="outline" onClick={resetForm}>
                 Cancel
               </Button>
             )}
             <Button type="submit" disabled={submitting || uploading}>
-              {submitting ? "Saving..." : isEditing ? "Update" : "Add Category"}
+              {submitting ? "Saving..." : isEditing ? "Update" : "Add"}
             </Button>
           </div>
         </div>
