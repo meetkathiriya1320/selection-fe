@@ -8,6 +8,7 @@ import "./HomePage.css";
 const HomePage = () => {
   const [banners, setBanners] = useState([]);
   const [featuredCategories, setFeaturedCategories] = useState([]);
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 
   useEffect(() => {
     // ... (fetch logic remains same)
@@ -18,7 +19,8 @@ const HomePage = () => {
           api.get("/category"),
         ]);
 
-        setBanners(bannerRes.data.data.filter((b) => b.isActive));
+        const activeBanners = bannerRes.data.data.filter((b) => b.isActive);
+        setBanners(activeBanners);
 
         // Filter featured categories
         const featured = catRes.data.data.filter(
@@ -32,21 +34,81 @@ const HomePage = () => {
     fetchData();
   }, []);
 
+  // Auto-rotate banners
+  useEffect(() => {
+    if (banners.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setCurrentBannerIndex((prev) => (prev + 1) % banners.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [banners.length]);
+
+  const nextBanner = () => {
+    setCurrentBannerIndex((prev) => (prev + 1) % banners.length);
+  };
+
+  const prevBanner = () => {
+    setCurrentBannerIndex(
+      (prev) => (prev - 1 + banners.length) % banners.length,
+    );
+  };
+
+  const handleDotClick = (index) => {
+    setCurrentBannerIndex(index);
+  };
+
+  const currentBanner = banners[currentBannerIndex];
+
   const heroImage =
-    banners.length > 0
-      ? getSecureImageUrl(banners[0].image)
+    banners.length > 0 && currentBanner
+      ? getSecureImageUrl(currentBanner.image)
       : "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop";
 
-  // Use translated title if it matches default, otherwise use banner title (dynamic content usually not translated this way but for static default it works)
-  const heroTitle = banners.length > 0 ? banners[0].title : "New Collection";
+  const heroTitle =
+    banners.length > 0 && currentBanner
+      ? currentBanner.title
+      : "New Collection";
 
   return (
     <div className="home-page">
       {/* Clean Hero */}
       <section className="hero-clean">
-        <div className="hero-image-wrapper">
-          <img src={heroImage} alt="Hero" />
-        </div>
+        {banners.length > 0 ? (
+          banners.map((banner, index) => (
+            <div
+              key={banner._id || index}
+              className={`hero-image-wrapper ${
+                index === currentBannerIndex ? "active" : ""
+              }`}
+            >
+              <img src={getSecureImageUrl(banner.image)} alt={banner.title} />
+            </div>
+          ))
+        ) : (
+          <div className="hero-image-wrapper active">
+            <img
+              src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop"
+              alt="Hero"
+            />
+          </div>
+        )}
+
+        {banners.length > 1 && (
+          <>
+            <div className="carousel-dots">
+              {banners.map((_, index) => (
+                <span
+                  key={index}
+                  className={`carousel-dot ${index === currentBannerIndex ? "active" : ""}`}
+                  onClick={() => handleDotClick(index)}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
         <div className="hero-text-content">
           <h1 className="hero-headline">{heroTitle}</h1>
           <p className="hero-subheadline">

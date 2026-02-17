@@ -4,6 +4,7 @@ import { getSecureImageUrl } from "../../utils/imageUtils";
 import Button from "../common/Button";
 import Input from "../common/Input";
 import { Loader2, Trash } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { showConfirmationToast } from "../../utils/toastUtils";
 
