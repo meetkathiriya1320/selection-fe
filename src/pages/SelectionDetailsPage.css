@@ -157,56 +157,6 @@
   letter-spacing: 0.05em;
 }
 
-/* Date Inputs */
-.date-inputs-row {
-  display: flex;
-  gap: 1rem;
-  width: 100%;
-}
-
-.date-field {
-  flex: 1;
-}
-
-.sub-label {
-  display: block;
-  font-size: 0.75rem;
-  color: #64748b;
-  margin-bottom: 0.25rem;
-  font-weight: 500;
-}
-
-.input-with-icon {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.input-icon {
-  position: absolute;
-  left: 1rem;
-  color: #94a3b8;
-  pointer-events: none;
-}
-
-.custom-date-input {
-  width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.5rem; /* Icon space */
-  border: 1px solid #e2e8f0;
-  border-radius: 4px; /* Slightly squarer than pills */
-  font-family: "Inter", sans-serif;
-  color: #0f172a;
-  font-size: 0.95rem;
-  background: white;
-  cursor: pointer;
-  transition: border-color 0.2s;
-}
-
-.custom-date-input:focus {
-  outline: none;
-  border-color: #0f172a;
-}
-
 /* Chips */
 
 .chips-grid {

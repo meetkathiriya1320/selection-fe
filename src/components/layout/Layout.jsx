@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 import { Outlet } from "react-router-dom";
 import CartDrawer from "../cart/CartDrawer";
 const Layout = () => {
@@ -12,20 +13,7 @@ const Layout = () => {
       <main style={{ flexGrow: 1, paddingTop: "var(--header-height)" }}>
         <Outlet />
       </main>
-      <footer
-        style={{
-          backgroundColor: "var(--primary)",
-          color: "white",
-          padding: "3rem 0",
-          textAlign: "center",
-        }}
-      >
-        <div className="container">
-          <p style={{ opacity: 0.7 }}>
-            &copy; 2024 Selection. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

@@ -7,7 +7,7 @@ import Button from "../components/common/Button";
 import Input from "../components/common/Input";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-import { Loader2, Calendar, AlertCircle, ShoppingBag } from "lucide-react";
+import { Loader2, AlertCircle, ShoppingBag } from "lucide-react";
 import "./SelectionDetailsPage.css";
 
 const SelectionDetailsPage = () => {
@@ -20,8 +20,6 @@ const SelectionDetailsPage = () => {
   const [bookingLoading, setBookingLoading] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [error, setError] = useState("");
 
   // Selection states
@@ -48,67 +46,6 @@ const SelectionDetailsPage = () => {
     };
     fetchData();
   }, [id]);
-
-  // Availability State
-  const [bookedDates, setBookedDates] = useState([]);
-
-  // Fetch Availability when size changes
-  useEffect(() => {
-    const fetchAvailability = async () => {
-      // Logic: Only fetch if needed. If item has sizes, wait for size.
-      // But user might want to see general availability?
-      // For now, let's fetch always, but backend filters if params present.
-
-      let query = `?`;
-      if (selectedTop) query += `topSize=${selectedTop}&`;
-      if (selectedBottom) query += `bottomSize=${selectedBottom}&`;
-
-      try {
-        const response = await api.get(
-          `/selection-order/availability/${id}${query}`,
-        );
-        setBookedDates(response.data.data);
-      } catch (err) {
-        console.error("Failed to check availability", err);
-      }
-    };
-
-    if (selection) {
-      fetchAvailability();
-    }
-  }, [id, selection, selectedTop, selectedBottom]);
-
-  // Check if a date range overlaps with booked dates
-  const isRangeAvailable = (start, end) => {
-    if (!start || !end) return true;
-    const s = new Date(start);
-    const e = new Date(end);
-
-    return !bookedDates.some((booking) => {
-      const bookedStart = new Date(booking.from);
-      const bookedEnd = new Date(booking.to);
-      // Check Intersect: (StartA <= EndB) and (EndA >= StartB)
-      return s <= bookedEnd && e >= bookedStart;
-    });
-  };
-
-  const handleDateChange = (start, end) => {
-    if (start) setStartDate(start);
-    if (end) setEndDate(end);
-
-    const s = start || startDate;
-    const e = end || endDate;
-
-    if (s && e) {
-      if (!isRangeAvailable(s, e)) {
-        const msg = "Selected dates are unavailable for this size.";
-        setError(msg);
-        toast.error(msg, { id: "date-conflict" });
-      } else {
-        setError("");
-      }
-    }
-  };
 
   const { addToCart } = useCart(); // Use Cart Context
 
@@ -264,45 +201,6 @@ const SelectionDetailsPage = () => {
                     </div>
                   </div>
                 )}
-
-                {/* Date Selection */}
-                <div className="variant-group">
-                  <label>Booking Dates</label>
-                  <div className="date-inputs-row">
-                    <div className="date-field">
-                      <span className="sub-label">Deliver From</span>
-                      <div className="input-with-icon">
-                        <Calendar size={16} className="input-icon" />
-                        <input
-                          type="date"
-                          className="custom-date-input"
-                          value={startDate}
-                          min={new Date().toLocaleDateString("en-CA")}
-                          onChange={(e) =>
-                            handleDateChange(e.target.value, null)
-                          }
-                        />
-                      </div>
-                    </div>
-                    <div className="date-field">
-                      <span className="sub-label">Receive By</span>
-                      <div className="input-with-icon">
-                        <Calendar size={16} className="input-icon" />
-                        <input
-                          type="date"
-                          className="custom-date-input"
-                          value={endDate}
-                          min={
-                            startDate || new Date().toLocaleDateString("en-CA")
-                          }
-                          onChange={(e) =>
-                            handleDateChange(null, e.target.value)
-                          }
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               {/* Actions */}
