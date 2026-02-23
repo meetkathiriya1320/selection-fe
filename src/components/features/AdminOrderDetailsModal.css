@@ -67,6 +67,28 @@
   color: #0f172a;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.invoice-btn {
+  background: #0f172a;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.invoice-btn:hover {
+  background: #1e293b;
+}
+
 /* Body */
 .modal-body {
   padding: 1.5rem;
@@ -170,6 +192,33 @@
 
 .admin-table tr:last-child td {
   border-bottom: none;
+}
+
+.item-info-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.item-img-wrapper {
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #f1f5f9;
+}
+
+.order-item-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-text {
+  display: flex;
+  flex-direction: column;
 }
 
 .item-name {
@@ -281,4 +330,147 @@
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+/* ─── Refund Deposit Button ─────────────────────────────────────── */
+.refund-btn {
+  display: inline-flex;
+  align-items: center;
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1.5px solid #fed7aa;
+  padding: 0.45rem 0.95rem;
+  border-radius: 6px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  gap: 4px;
+}
+.refund-btn:hover:not(:disabled) {
+  background: #ffedd5;
+  border-color: #fb923c;
+}
+.refund-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Already-refunded green badge */
+.refund-done-badge {
+  display: inline-flex;
+  align-items: center;
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1.5px solid #bbf7d0;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+/* ─── Refund Confirmation Panel ─────────────────────────────────── */
+.refund-panel {
+  background: #fff7ed;
+  border-top: 1px solid #fed7aa;
+  border-bottom: 1px solid #fed7aa;
+  padding: 1rem 1.5rem;
+  animation: fadeIn 0.2s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.refund-panel-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.refund-warn-icon {
+  color: #c2410c;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.refund-panel-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+.refund-panel-text strong {
+  font-weight: 700;
+  color: #c2410c;
+}
+.refund-panel-text span {
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+.refund-reason-input {
+  width: 100%;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid #fed7aa;
+  border-radius: 6px;
+  font-size: 0.87rem;
+  color: #1e293b;
+  background: #fff;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.refund-reason-input:focus {
+  border-color: #fb923c;
+}
+
+.refund-panel-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.refund-cancel-btn {
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.refund-cancel-btn:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+.refund-confirm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.45rem 1.1rem;
+  border-radius: 6px;
+  border: none;
+  background: #c2410c;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.refund-confirm-btn:hover:not(:disabled) {
+  background: #9a3412;
+}
+.refund-confirm-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.refund-no-payment {
+  font-size: 0.8rem;
+  color: #b91c1c;
+  margin: 0;
+  text-align: right;
 }

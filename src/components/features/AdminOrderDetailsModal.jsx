@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axios";
-import { X, Loader2 } from "lucide-react";
+import { refundDeposit } from "../../api/paymentService";
+import {
+  X,
+  Loader2,
+  RotateCcw,
+  AlertTriangle,
+  CheckCircle2,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import "./AdminOrderDetailsModal.css";
 
@@ -13,8 +20,18 @@ const AdminOrderDetailsModal = ({
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Refund state
+  const [paymentRecord, setPaymentRecord] = useState(null);
+  const [showRefundPanel, setShowRefundPanel] = useState(false);
+  const [refundReason, setRefundReason] = useState("");
+  const [refunding, setRefunding] = useState(false);
+  const [refundDone, setRefundDone] = useState(false);
+
   useEffect(() => {
     if (isOpen && orderId) {
+      setShowRefundPanel(false);
+      setRefundReason("");
+      setRefundDone(false);
       fetchDetails();
     }
   }, [isOpen, orderId]);
@@ -24,6 +41,19 @@ const AdminOrderDetailsModal = ({
     try {
       const res = await api.get(`/order/${orderId}`);
       setData(res.data.data); // { order, items }
+
+      // Fetch the payment record linked to this specific order (admin only)
+      if (!isUserView) {
+        try {
+          const pmtRes = await api.get(`/payment/by-order/${orderId}`);
+          const linked = pmtRes.data.data || null;
+          setPaymentRecord(linked);
+          if (linked?.refund_status === "processed") setRefundDone(true);
+        } catch {
+          // 404 = no online payment for this order (e.g. pay_later booking)
+          setPaymentRecord(null);
+        }
+      }
     } catch (error) {
       console.error(error);
       toast.error("Failed to load details");
@@ -37,9 +67,34 @@ const AdminOrderDetailsModal = ({
       const payload = { [type]: newStatus };
       await api.put(`/selection-order/${itemId}/status`, payload);
       toast.success(`${type.replace("_", " ")} updated`);
-      fetchDetails(); // Refresh
+      fetchDetails();
     } catch (err) {
       toast.error("Failed to update");
+    }
+  };
+
+  const handleRefundDeposit = async () => {
+    if (!paymentRecord) {
+      toast.error("No linked payment record found for this order.");
+      return;
+    }
+    setRefunding(true);
+    try {
+      await refundDeposit(
+        paymentRecord._id,
+        null,
+        refundReason || "Deposit refund",
+      );
+      toast.success("Deposit refund initiated successfully via Razorpay!");
+      setRefundDone(true);
+      setShowRefundPanel(false);
+      fetchDetails(); // refresh deposit_status on items
+    } catch (err) {
+      const msg =
+        err?.response?.data?.message || "Refund failed. Please try again.";
+      toast.error(msg);
+    } finally {
+      setRefunding(false);
     }
   };
 
@@ -49,6 +104,12 @@ const AdminOrderDetailsModal = ({
     if (isNaN(date.getTime())) return "Invalid Date";
     return date.toLocaleDateString("en-GB");
   };
+
+  const depositAmount = data
+    ? data.order.total_deposit
+      ? data.order.total_deposit
+      : data.order.total_amount * 0.5
+    : 0;
 
   if (!isOpen) return null;
 
@@ -63,10 +124,110 @@ const AdminOrderDetailsModal = ({
               #{orderId.slice(-6).toUpperCase()}
             </span>
           </h2>
-          <button onClick={onClose} className="close-btn">
-            <X size={20} />
-          </button>
+          <div className="header-actions">
+            {/* Invoice download */}
+            <button
+              className="invoice-btn"
+              onClick={async () => {
+                try {
+                  const blob = await import("../../api/paymentService").then(
+                    (m) => m.downloadInvoice(orderId),
+                  );
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `Invoice-${orderId.slice(-6).toUpperCase()}.pdf`;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  toast.success("Invoice downloaded");
+                } catch (e) {
+                  console.error(e);
+                  toast.error("Failed to download invoice");
+                }
+              }}
+            >
+              Download Invoice
+            </button>
+
+            {/* Refund Deposit button — admin only */}
+            {!isUserView && (
+              <>
+                {refundDone ? (
+                  <span className="refund-done-badge">
+                    <CheckCircle2 size={14} style={{ marginRight: 4 }} />
+                    Deposit Refunded
+                  </span>
+                ) : (
+                  <button
+                    className="refund-btn"
+                    onClick={() => setShowRefundPanel((v) => !v)}
+                    disabled={refunding}
+                  >
+                    <RotateCcw size={14} style={{ marginRight: 6 }} />
+                    Refund Deposit
+                  </button>
+                )}
+              </>
+            )}
+
+            <button onClick={onClose} className="close-btn">
+              <X size={20} />
+            </button>
+          </div>
         </div>
+
+        {/* Refund Confirmation Panel */}
+        {showRefundPanel && !isUserView && !refundDone && (
+          <div className="refund-panel">
+            <div className="refund-panel-inner">
+              <AlertTriangle size={18} className="refund-warn-icon" />
+              <div className="refund-panel-text">
+                <strong>Confirm Deposit Refund</strong>
+                <span>
+                  ₹{depositAmount.toLocaleString()} will be refunded via
+                  Razorpay to the customer's original payment method.
+                </span>
+              </div>
+            </div>
+            <input
+              className="refund-reason-input"
+              type="text"
+              placeholder="Reason (optional, e.g. Item returned in good condition)"
+              value={refundReason}
+              onChange={(e) => setRefundReason(e.target.value)}
+            />
+            <div className="refund-panel-actions">
+              <button
+                className="refund-cancel-btn"
+                onClick={() => setShowRefundPanel(false)}
+                disabled={refunding}
+              >
+                Cancel
+              </button>
+              <button
+                className="refund-confirm-btn"
+                onClick={handleRefundDeposit}
+                disabled={refunding || !paymentRecord}
+              >
+                {refunding ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  "Yes, Refund Now"
+                )}
+              </button>
+            </div>
+            {!paymentRecord && (
+              <p className="refund-no-payment">
+                ⚠ No online payment record linked to this order. Razorpay refund
+                is not available.
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Body */}
         <div className="modal-body">
@@ -100,21 +261,14 @@ const AdminOrderDetailsModal = ({
                 <div className="summary-card">
                   <div className="summary-label">Deposit (50%)</div>
                   <div className="summary-value">
-                    ₹
-                    {(data.order.total_deposit
-                      ? data.order.total_deposit
-                      : data.order.total_amount * 0.5
-                    ).toLocaleString()}
+                    ₹{depositAmount.toLocaleString()}
                   </div>
                 </div>
                 <div className="summary-card">
                   <div className="summary-label">Total Amount</div>
                   <div className="summary-value highlight">
                     ₹
-                    {(data.order.total_deposit
-                      ? data.order.total_amount + data.order.total_deposit
-                      : data.order.total_amount * 1.5
-                    ).toLocaleString()}
+                    {(data.order.total_amount + depositAmount).toLocaleString()}
                   </div>
                 </div>
                 <div className="summary-card">
@@ -143,11 +297,26 @@ const AdminOrderDetailsModal = ({
                       <tr key={item._id}>
                         {/* 1. Item Info */}
                         <td>
-                          <div className="item-name">
-                            {item.selection_id?.name}
-                          </div>
-                          <div className="item-sku">
-                            SKU: {item.selection_id?.SKU}
+                          <div className="item-info-cell">
+                            <div className="item-img-wrapper">
+                              <img
+                                src={
+                                  item.selection_id?.photos?.[0] ||
+                                  item.selection_id?.photo ||
+                                  "/placeholder.png"
+                                }
+                                alt={item.selection_id?.name}
+                                className="order-item-img"
+                              />
+                            </div>
+                            <div className="item-text">
+                              <div className="item-name">
+                                {item.selection_id?.name}
+                              </div>
+                              <div className="item-sku">
+                                SKU: {item.selection_id?.SKU}
+                              </div>
+                            </div>
                           </div>
                         </td>
 
@@ -219,14 +388,28 @@ const AdminOrderDetailsModal = ({
                         <td>
                           {isUserView ? (
                             <span
-                              className={`status-lock status-${item.payment_status || "pending"}`}
+                              className={`status-lock status-${
+                                item.payment_status === "done"
+                                  ? "completed"
+                                  : item.payment_status || "pending"
+                              }`}
                             >
-                              {item.payment_status || "Pending"}
+                              {item.payment_status === "done"
+                                ? "Completed"
+                                : item.payment_status || "Pending"}
                             </span>
                           ) : (
                             <select
-                              className={`status-select status-${item.payment_status || "pending"}`}
-                              value={item.payment_status || "pending"}
+                              className={`status-select status-${
+                                item.payment_status === "done"
+                                  ? "completed"
+                                  : item.payment_status || "pending"
+                              }`}
+                              value={
+                                item.payment_status === "done"
+                                  ? "completed"
+                                  : item.payment_status || "pending"
+                              }
                               onChange={(e) =>
                                 handleStatusUpdate(
                                   item._id,
