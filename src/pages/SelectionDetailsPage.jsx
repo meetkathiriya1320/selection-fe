@@ -6,14 +6,28 @@ import { getSecureImageUrl } from "../utils/imageUtils";
 import Button from "../components/common/Button";
 import Input from "../components/common/Input";
 import { useAuth } from "../context/AuthContext";
+import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
-import { Loader2, AlertCircle, ShoppingBag } from "lucide-react";
+import { Loader2, AlertCircle, ShoppingBag, Heart } from "lucide-react";
 import "./SelectionDetailsPage.css";
+
+// Standard clothing size order
+const SIZE_ORDER = ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "3XL", "4XL"];
+const sortSizes = (sizes) =>
+  [...sizes].sort((a, b) => {
+    const ai = SIZE_ORDER.indexOf(a.toUpperCase());
+    const bi = SIZE_ORDER.indexOf(b.toUpperCase());
+    if (ai === -1 && bi === -1) return a.localeCompare(b); // unknown sizes alphabetically
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
 
 const SelectionDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toggleWishlist, isWishlisted } = useWishlist();
 
   const [selection, setSelection] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -124,9 +138,27 @@ const SelectionDetailsPage = () => {
           <div className="sticky-info-wrapper">
             {/* Header */}
             <div className="info-header">
-              <span className="category-label">
-                {selection.category || "Collection"}
-              </span>
+              <div className="header-top-row">
+                <span className="category-label">
+                  {selection.category || "Collection"}
+                </span>
+                <button
+                  className={`wishlist-btn-detail ${isWishlisted(selection._id) ? "wishlisted" : ""}`}
+                  onClick={() => toggleWishlist(selection)}
+                  title={
+                    isWishlisted(selection._id)
+                      ? "Remove from wishlist"
+                      : "Save to wishlist"
+                  }
+                >
+                  <Heart
+                    size={22}
+                    fill={isWishlisted(selection._id) ? "#ef4444" : "none"}
+                    stroke={isWishlisted(selection._id) ? "#ef4444" : "#94a3b8"}
+                  />
+                  <span>{isWishlisted(selection._id) ? "Saved" : "Save"}</span>
+                </button>
+              </div>
               <h1 className="product-heading">{selection.name}</h1>
               <div className="price-sku-row">
                 <div className="price-tag">
@@ -155,7 +187,7 @@ const SelectionDetailsPage = () => {
                   <div className="variant-group">
                     <label>Top Size</label>
                     <div className="chips-grid">
-                      {selection.topSizes.map((s) => (
+                      {sortSizes(selection.topSizes).map((s) => (
                         <button
                           key={s}
                           className={`chip-btn ${selectedTop === s ? "selected" : ""}`}
@@ -172,7 +204,7 @@ const SelectionDetailsPage = () => {
                   <div className="variant-group">
                     <label>Bottom Size</label>
                     <div className="chips-grid">
-                      {selection.bottomSizes.map((s) => (
+                      {sortSizes(selection.bottomSizes).map((s) => (
                         <button
                           key={s}
                           className={`chip-btn ${selectedBottom === s ? "selected" : ""}`}

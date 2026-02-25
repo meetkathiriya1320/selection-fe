@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import "./CheckoutPage.css";
 import toast from "react-hot-toast";
+import AvailabilityCalendar from "../components/features/AvailabilityCalendar";
 
 const CheckoutPage = () => {
   const { cartItems, cartTotal, clearCart } = useCart();
@@ -31,6 +32,39 @@ const CheckoutPage = () => {
 
   const [notes, setNotes] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("online"); // 'online' or 'pay_later'
+  const [extraBookedRanges, setExtraBookedRanges] = useState([]);
+
+  // Fetch booked ranges for all unique cart items (except first, which calendar fetches itself)
+  useEffect(() => {
+    const fetchAllBooked = async () => {
+      const uniqueIds = [...new Set(cartItems.map((i) => i._id))];
+      if (uniqueIds.length < 2) {
+        setExtraBookedRanges([]);
+        return;
+      }
+      const extraIds = uniqueIds.slice(1); // first one calendar handles itself
+      try {
+        const results = await Promise.all(
+          extraIds.map((id) =>
+            api.get(`/order/availability?selectionId=${id}`),
+          ),
+        );
+        const ranges = results.flatMap((res) =>
+          (res.data.data || [])
+            .filter((o) => o.deliver_date || o.receive_date)
+            .map((o) => ({
+              start: o.deliver_date ? new Date(o.deliver_date) : null,
+              end: o.receive_date ? new Date(o.receive_date) : null,
+            }))
+            .filter((r) => r.start || r.end),
+        );
+        setExtraBookedRanges(ranges);
+      } catch {
+        setExtraBookedRanges([]);
+      }
+    };
+    if (cartItems.length > 1) fetchAllBooked();
+  }, [cartItems]);
 
   useEffect(() => {
     if (cartItems.length === 0 && !success) {
@@ -300,26 +334,24 @@ const CheckoutPage = () => {
               </p>
 
               <form onSubmit={handleSubmit} id="checkout-form">
-                <div className="form-row">
-                  <Input
-                    label="Delivery Date"
-                    type="date"
-                    required
-                    value={dates.deliveryDate}
-                    onChange={(e) =>
-                      setDates({ ...dates, deliveryDate: e.target.value })
-                    }
-                  />
-                  <Input
-                    label="Return Date"
-                    type="date"
-                    required
-                    value={dates.returnDate}
-                    onChange={(e) =>
-                      setDates({ ...dates, returnDate: e.target.value })
-                    }
-                  />
-                </div>
+                {/* Single shared calendar for all cart items */}
+                {cartItems.length > 0 && (
+                  <div
+                    className="checkout-cal-block"
+                    style={{ marginBottom: "1rem" }}
+                  >
+                    <AvailabilityCalendar
+                      selectionId={cartItems[0]._id}
+                      selectable
+                      selectedStart={dates.deliveryDate}
+                      selectedEnd={dates.returnDate}
+                      extraBookedRanges={extraBookedRanges}
+                      onRangeChange={({ start, end }) =>
+                        setDates({ deliveryDate: start, returnDate: end })
+                      }
+                    />
+                  </div>
+                )}
 
                 <div className="form-group">
                   <label>Additional Notes</label>

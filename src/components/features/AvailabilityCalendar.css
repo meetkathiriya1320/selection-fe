@@ -1,0 +1,240 @@
+/* AvailabilityCalendar.css — Premium redesign */
+
+.avail-calendar {
+  background: #ffffff;
+  border: 1px solid #e8edf3;
+  border-radius: 14px;
+  padding: 0.85rem 1rem 1rem;
+  font-family: "Inter", sans-serif;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
+  margin: 0;
+  max-width: 420px;
+}
+
+/* ── Header ── */
+.avail-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.avail-cal-title {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.avail-cal-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.cal-nav-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.18s ease;
+}
+
+.cal-nav-btn:hover {
+  background: #0f172a;
+  color: white;
+  border-color: #0f172a;
+}
+
+.cal-month-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0f172a;
+  min-width: 110px;
+  text-align: center;
+}
+
+/* ── Pick Hint Bar ── */
+.avail-cal-pick-hint {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.76rem;
+  color: #0369a1;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  letter-spacing: 0.01em;
+}
+
+/* ── Legend ── */
+.avail-cal-legend {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.68rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.legend-dot.available {
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+}
+
+.legend-dot.booked {
+  background: #fecaca;
+  border: 1.5px solid #f87171;
+}
+
+.legend-dot.today-dot {
+  background: #3b82f6;
+}
+
+.legend-dot.selected-dot {
+  background: #0f172a;
+}
+
+/* ── Day Name Header ── */
+.avail-cal-days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 0.2rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.35rem;
+}
+
+.cal-day-name {
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.1rem 0;
+}
+
+/* ── Calendar Grid ── */
+.avail-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+}
+
+.cal-cell {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.76rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: default;
+  transition: all 0.15s ease;
+  color: #334155;
+  position: relative;
+}
+
+.cal-cell.empty {
+  background: transparent;
+}
+
+.cal-cell.available {
+  background: transparent;
+  color: #334155;
+}
+
+.cal-cell.past {
+  opacity: 0.3;
+  color: #94a3b8;
+}
+
+/* Clickable available dates */
+.cal-cell.clickable {
+  cursor: pointer;
+}
+
+.cal-cell.clickable:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* Booked dates */
+.cal-cell.booked {
+  background: #fef2f2;
+  color: #dc2626;
+  font-weight: 600;
+  cursor: not-allowed;
+}
+
+/* Today */
+.cal-cell.today {
+  background: #3b82f6 !important;
+  color: white !important;
+  font-weight: 700;
+  border-radius: 8px;
+}
+
+/* ── Selected Range ── */
+.cal-cell.sel-start,
+.cal-cell.sel-end {
+  background: #0f172a !important;
+  color: white !important;
+  font-weight: 700;
+}
+
+.cal-cell.sel-start {
+  border-radius: 8px 0 0 8px;
+}
+
+.cal-cell.sel-end {
+  border-radius: 0 8px 8px 0;
+}
+
+.cal-cell.sel-start.sel-end {
+  border-radius: 8px;
+}
+
+.cal-cell.in-sel-range {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-radius: 0;
+  font-weight: 500;
+}
+
+/* Loading */
+.cal-loading {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.88rem;
+  padding: 2rem 0;
+}

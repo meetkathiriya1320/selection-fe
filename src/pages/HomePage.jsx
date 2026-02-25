@@ -95,20 +95,6 @@ const HomePage = () => {
           </div>
         )}
 
-        {banners.length > 1 && (
-          <>
-            <div className="carousel-dots">
-              {banners.map((_, index) => (
-                <span
-                  key={index}
-                  className={`carousel-dot ${index === currentBannerIndex ? "active" : ""}`}
-                  onClick={() => handleDotClick(index)}
-                />
-              ))}
-            </div>
-          </>
-        )}
-
         <div className="hero-text-content">
           <h1 className="hero-headline">{heroTitle}</h1>
           <p className="hero-subheadline">

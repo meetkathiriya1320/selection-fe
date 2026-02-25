@@ -29,6 +29,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       setUser(user);
+      window.dispatchEvent(new Event("user-login"));
       return { success: true, user };
     } catch (error) {
       return {
@@ -63,6 +64,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       setUser(user);
+      window.dispatchEvent(new Event("user-login"));
 
       return { success: true, user };
     } catch (error) {
@@ -77,6 +79,14 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
+    window.dispatchEvent(new Event("user-logout"));
+  };
+
+  const setUserFromGoogle = (token, userData) => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(userData));
+    setUser(userData);
+    window.dispatchEvent(new Event("user-login"));
   };
 
   return (
@@ -87,6 +97,7 @@ export const AuthProvider = ({ children }) => {
         register,
         verifyOtp,
         logout,
+        setUserFromGoogle,
         loading,
         isAuthenticated: !!user,
       }}

@@ -314,3 +314,54 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Checkout Availability Calendars ── */
+.checkout-calendars {
+  margin-top: 1.5rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.75rem 2rem;
+}
+
+.cal-section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.35rem;
+  font-family: "Inter", sans-serif;
+}
+
+.cal-section-desc {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0 0 1.25rem;
+}
+
+.checkout-cal-block {
+  margin-bottom: 1.5rem;
+  border: 1px solid #f1f5f9;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.checkout-cal-block:last-child {
+  margin-bottom: 0;
+}
+
+.checkout-cal-item-name {
+  background: #0f172a;
+  color: white;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.55rem 1rem;
+}
+
+.checkout-cal-block .avail-calendar {
+  border: none;
+  border-radius: 0;
+  background: #fafafa;
+  margin: 0;
+}

@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import api from "../api/axios";
 import { getSecureImageUrl } from "../utils/imageUtils";
-import { Search, ChevronRight, ChevronDown } from "lucide-react";
+import { Search, ChevronRight, ChevronDown, Heart } from "lucide-react";
+import { useWishlist } from "../context/WishlistContext";
 import "./SelectionsPage.css";
 
 const SelectionsPage = () => {
   const [selections, setSelections] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { toggleWishlist, isWishlisted } = useWishlist();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentCategory = searchParams.get("category") || "All";
@@ -204,6 +206,25 @@ const SelectionsPage = () => {
                     <div className="card-overlay">
                       <span className="view-btn">View Details</span>
                     </div>
+                    <button
+                      className={`wishlist-btn ${isWishlisted(item._id) ? "wishlisted" : ""}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleWishlist(item);
+                      }}
+                      title={
+                        isWishlisted(item._id)
+                          ? "Remove from wishlist"
+                          : "Add to wishlist"
+                      }
+                    >
+                      <Heart
+                        size={18}
+                        fill={isWishlisted(item._id) ? "#ef4444" : "none"}
+                        stroke={isWishlisted(item._id) ? "#ef4444" : "white"}
+                      />
+                    </button>
                   </div>
                   <div className="product-info-block">
                     <span className="category-tag">{item.category}</span>
